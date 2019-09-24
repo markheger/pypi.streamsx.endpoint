@@ -11,7 +11,7 @@ python setup.py sdist bdist_wheel upload -r pypi
 ```
 Note: This is done using the `ibmstreams` account at pypi.org and requires `.pypirc` file containing the credentials in your home directory.
 
-Package details: https://pypi.python.org/pypi/streamsx.inet
+Package details: https://pypi.python.org/pypi/streamsx.endpoint
 
 Documentation is using Sphinx and can be built locally using:
 ```
@@ -31,7 +31,7 @@ firefox package/docs/build/html/index.html
 The documentation is also setup at `readthedocs.io`.
 
 Documentation links:
-* http://streamsxinet.readthedocs.io/
+* http://streamsxendpoint.readthedocs.io/
 
 ## Version update
 
