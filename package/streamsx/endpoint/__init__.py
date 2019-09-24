@@ -29,8 +29,8 @@ A simple example of a Streams application that provides an endpoint for json inj
 
 """
 
-__version__='0.1.0'
+__version__='0.2.0'
 
-__all__ = ['download_toolkit', 'json_injection']
-from streamsx.endpoint._endpoint import download_toolkit, json_injection
+__all__ = ['download_toolkit', 'json_injection', 'view_tuples']
+from streamsx.endpoint._endpoint import download_toolkit, json_injection, view_tuples
 

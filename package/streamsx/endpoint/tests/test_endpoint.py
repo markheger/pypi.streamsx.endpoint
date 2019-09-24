@@ -32,8 +32,17 @@ class Test(TestCase):
         assert(result.return_code == 0)
 
 
-    def test_basic(self):
-        topo = Topology('test_basic')
+    def test_basic_json_injection(self):
+        name = 'test_basic_json_injection'
+        topo = Topology(name)
         res = endpoint.json_injection(topo)
         res.print()
-        self._build_only('test_basic', topo)
+        self._build_only(name, topo)
+
+    def test_basic_view_tuples(self):
+        name = 'test_basic_view_tuples'
+        topo = Topology(name)
+        s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
+        endpoint.view_tuples(s.last(10).trigger(1))
+        self._build_only(name, topo)
+

@@ -52,6 +52,8 @@ def download_toolkit(url=None, target_dir=None):
 def json_injection(topology, port=0, name=None):
     """Receives HTTP POST requests.
 
+    Embeds a Jetty web server to allow HTTP or HTTPS POST requests with mime type application/json to submit a tuple on its output port.
+
     Args:
         topology: The Streams topology.
         port: Port number for the embedded Jetty HTTP server. If the port is set to 0, the jetty server uses a free tcp port, and the metric serverPort delivers the actual value. 
@@ -64,12 +66,35 @@ def json_injection(topology, port=0, name=None):
     return _op.outputs[0]
 
 
+def view_tuples(stream, port=0, name=None):
+    """REST HTTP/HTTPS API to view tuples from windowed input ports.
+
+    Embeds a Jetty web server to provide HTTP REST access to the collection of tuples in the input port window at the time of the last eviction for tumbling windows, or last trigger for sliding windows.
+
+    Example with a sliding window::
+
+        import streamsx.endpoint as endpoint
+        s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
+        endpoint.view_tuples(s.last(3).trigger(1))
+
+    Args:
+        stream(Stream): Windowed stream of tuples that will be viewable using a HTTP GET request. 
+        port: Port number for the embedded Jetty HTTP server. If the port is set to 0, the jetty server uses a free tcp port, and the metric serverPort delivers the actual value. 
+        name(str): Source name in the Streams context, defaults to a generated name.
+
+    Returns:
+        streamsx.topology.topology.Sink: Stream termination.
+    """
+    _op = _HTTPTupleView(stream, port=port, name=name)
+    return streamsx.topology.topology.Sink(_op)
+
+
+
 class _HTTPJSONInjection(streamsx.spl.op.Source):
 
     def __init__(self, topology, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
         topology = topology
         kind="com.ibm.streamsx.inet.rest::HTTPJSONInjection"
-#        topology
         params = dict()
         if vmArg is not None:
             params['vmArg'] = vmArg
@@ -93,3 +118,46 @@ class _HTTPJSONInjection(streamsx.spl.op.Source):
             params['trustStorePassword'] = trustStorePassword
 
         super(_HTTPJSONInjection, self).__init__(topology,kind,schema,params,name)
+
+
+class _HTTPTupleView(streamsx.spl.op.Sink):
+
+    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+        topology = stream.topology
+        kind="com.ibm.streamsx.inet.rest::HTTPTupleView"
+        params = dict()
+        if vmArg is not None:
+            params['vmArg'] = vmArg
+        if certificateAlias is not None:
+            params['certificateAlias'] = certificateAlias
+        if context is not None:
+            params['context'] = context
+        if contextResourceBase is not None:
+            params['contextResourceBase'] = contextResourceBase
+        if forceEmpty is not None:
+            params['forceEmpty'] = forceEmpty
+        if headers is not None:
+            params['headers'] = headers
+        if host is not None:
+            params['host'] = host
+        if keyPassword is not None:
+            params['keyPassword'] = keyPassword
+        if keyStore is not None:
+            params['keyStore'] = keyStore
+        if keyStorePassword is not None:
+            params['keyStorePassword'] = keyStorePassword
+        if namedPartitionQuery is not None:
+            params['namedPartitionQuery'] = namedPartitionQuery
+        if partitionBy is not None:
+            params['partitionBy'] = partitionBy
+        if partitionKey is not None:
+            params['partitionKey'] = partitionKey
+        if port is not None:
+            params['port'] = port
+        if trustStore is not None:
+            params['trustStore'] = trustStore
+        if trustStorePassword is not None:
+            params['trustStorePassword'] = trustStorePassword
+
+        super(_HTTPTupleView, self).__init__(kind,stream,params,name)
+
