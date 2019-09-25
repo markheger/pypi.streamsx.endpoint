@@ -19,7 +19,7 @@ A simple example of a Streams application that provides an endpoint for json inj
 
     topo = Topology()
 
-    s1 = endpoint.json_injection(topo)
+    s1 = endpoint.inject(topo)
     s1.print()
 
     submit ('DISTRIBUTED', topo)
