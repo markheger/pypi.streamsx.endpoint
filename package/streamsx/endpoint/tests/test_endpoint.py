@@ -35,9 +35,30 @@ class Test(TestCase):
     def test_basic_json_injection(self):
         name = 'test_basic_json_injection'
         topo = Topology(name)
-        res = endpoint.json_injection(topo)
+        res = endpoint.inject(topo)
         res.print()
         self._build_only(name, topo)
+
+    def test_basic_xml_injection(self):
+        name = 'test_basic_xml_injection'
+        topo = Topology(name)
+        res = endpoint.inject(topo, schema=CommonSchema.XML)
+        self._build_only(name, topo)
+
+    def test_basic_string_injection(self):
+        name = 'test_basic_string_injection'
+        topo = Topology(name)
+        res = endpoint.inject(topo, schema=CommonSchema.String)
+        res.print()
+        self._build_only(name, topo)
+
+    def test_basic_stream_schema_injection(self):
+        name = 'test_basic_stream_schema_injection'
+        topo = Topology(name)
+        res = endpoint.inject(topo, schema=StreamSchema('tuple<int32 a, boolean alert>'))
+        res.print()
+        self._build_only(name, topo)
+
 
     def test_basic_view_tuples(self):
         name = 'test_basic_view_tuples'

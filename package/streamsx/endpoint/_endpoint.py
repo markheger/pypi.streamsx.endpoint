@@ -49,20 +49,39 @@ def download_toolkit(url=None, target_dir=None):
     return _toolkit_location
 
 
-def json_injection(topology, port=0, name=None):
+def inject(topology, port=0, schema=CommonSchema.Json, name=None):
     """Receives HTTP POST requests.
 
-    Embeds a Jetty web server to allow HTTP or HTTPS POST requests with mime type application/json to submit a tuple on its output port.
+    Embeds a Jetty web server to allow HTTP/HTTPS POST requests with the following mime types to be submitted as tuple on the output stream:
+
+    .. csv-table::
+        :header: schema, content-type
+
+        CommonSchema.Json, application/json
+        CommonSchema.XML, application/xml
+        CommonSchema.String, application/x-www-form-urlencoded
+        StreamSchema, application/x-www-form-urlencoded
 
     Args:
         topology: The Streams topology.
         port: Port number for the embedded Jetty HTTP server. If the port is set to 0, the jetty server uses a free tcp port, and the metric serverPort delivers the actual value. 
+        schema: Schema for returned Stream, default is ``CommonSchema.Json``
         name(str): Source name in the Streams context, defaults to a generated name.
 
     Returns:
-        Output Stream with schema: CommonSchema.Json.
+        Output Stream with schema defined in ``schema`` parameter (default ``CommonSchema.Json``).
     """
-    _op = _HTTPJSONInjection(topology, port=port, schema=CommonSchema.Json, name=name)
+
+    if schema is CommonSchema.Json:
+        kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'   
+    elif schema is CommonSchema.XML:
+        kind = 'com.ibm.streamsx.inet.rest::HTTPXMLInjection'
+    elif (schema is CommonSchema.String) or (isinstance(schema, StreamSchema)):
+        kind = 'com.ibm.streamsx.inet.rest::HTTPTupleInjection'
+    else:
+        raise ValueError(schema)
+
+    _op = _HTTPInjection(topology, kind=kind, port=port, schema=schema, name=name)
     return _op.outputs[0]
 
 
@@ -90,11 +109,10 @@ def view_tuples(stream, port=0, name=None):
 
 
 
-class _HTTPJSONInjection(streamsx.spl.op.Source):
+class _HTTPInjection(streamsx.spl.op.Source):
 
-    def __init__(self, topology, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
         topology = topology
-        kind="com.ibm.streamsx.inet.rest::HTTPJSONInjection"
         params = dict()
         if vmArg is not None:
             params['vmArg'] = vmArg
@@ -117,7 +135,7 @@ class _HTTPJSONInjection(streamsx.spl.op.Source):
         if trustStorePassword is not None:
             params['trustStorePassword'] = trustStorePassword
 
-        super(_HTTPJSONInjection, self).__init__(topology,kind,schema,params,name)
+        super(_HTTPInjection, self).__init__(topology,kind,schema,params,name)
 
 
 class _HTTPTupleView(streamsx.spl.op.Sink):
