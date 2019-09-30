@@ -49,7 +49,7 @@ def download_toolkit(url=None, target_dir=None):
     return _toolkit_location
 
 
-def inject(topology, port=0, schema=CommonSchema.Json, name=None):
+def inject(topology, name, context=None, schema=CommonSchema.Json):
     """Receives HTTP POST requests.
 
     Embeds a Jetty web server to allow HTTP/HTTPS POST requests with the following mime types to be submitted as tuple on the output stream:
@@ -62,11 +62,18 @@ def inject(topology, port=0, schema=CommonSchema.Json, name=None):
         CommonSchema.String, application/x-www-form-urlencoded
         StreamSchema, application/x-www-form-urlencoded
 
+    Example for JSON injection::
+
+        import streamsx.endpoint as endpoint
+        topo = Topology()
+        s1 = endpoint.inject(topo, name='jsoninject', context='sample')
+        s1.print()
+
     Args:
         topology: The Streams topology.
-        port: Port number for the embedded Jetty HTTP server. If the port is set to 0, the jetty server uses a free tcp port, and the metric serverPort delivers the actual value. 
+        name(str): Source name in the Streams context. This name is part of the URL.
+        context(str): Defines an URL context path. URL contains ``context``/``name``.
         schema: Schema for returned Stream, default is ``CommonSchema.Json``
-        name(str): Source name in the Streams context, defaults to a generated name.
 
     Returns:
         Output Stream with schema defined in ``schema`` parameter (default ``CommonSchema.Json``).
@@ -81,11 +88,11 @@ def inject(topology, port=0, schema=CommonSchema.Json, name=None):
     else:
         raise ValueError(schema)
 
-    _op = _HTTPInjection(topology, kind=kind, port=port, schema=schema, name=name)
+    _op = _HTTPInjection(topology, kind=kind, context=context, schema=schema, name=name)
     return _op.outputs[0]
 
 
-def view_tuples(stream, port=0, name=None):
+def expose(window, name, context=None):
     """REST HTTP/HTTPS API to view tuples from windowed input ports.
 
     Embeds a Jetty web server to provide HTTP REST access to the collection of tuples in the input port window at the time of the last eviction for tumbling windows, or last trigger for sliding windows.
@@ -94,17 +101,20 @@ def view_tuples(stream, port=0, name=None):
 
         import streamsx.endpoint as endpoint
         s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
-        endpoint.view_tuples(s.last(3).trigger(1))
+        endpoint.expose(window=s.last(3).trigger(1), name='tupleview', context='sample')
+
+    The URL containing "**context**/**name**" for the sample above ends with: ``/sample/tupleview/ports/input/0/tuples``
 
     Args:
-        stream(Stream): Windowed stream of tuples that will be viewable using a HTTP GET request. 
-        port: Port number for the embedded Jetty HTTP server. If the port is set to 0, the jetty server uses a free tcp port, and the metric serverPort delivers the actual value. 
-        name(str): Source name in the Streams context, defaults to a generated name.
+        window(Window): Windowed stream of tuples that will be viewable using a HTTP GET request. 
+        name(str): Sink name in the Streams context. This name is part of the URL.
+        context(str): Defines an URL context path. URL contains ``context``/``name``.   
+        
 
     Returns:
         streamsx.topology.topology.Sink: Stream termination.
     """
-    _op = _HTTPTupleView(stream, port=port, name=name)
+    _op = _HTTPTupleView(window, context=context, name=name)
     return streamsx.topology.topology.Sink(_op)
 
 
