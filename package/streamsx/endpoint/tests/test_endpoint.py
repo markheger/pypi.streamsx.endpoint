@@ -35,35 +35,35 @@ class Test(TestCase):
     def test_basic_json_injection(self):
         name = 'test_basic_json_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo)
+        res = endpoint.inject(topo, name='jsoninject')
         res.print()
         self._build_only(name, topo)
 
     def test_basic_xml_injection(self):
         name = 'test_basic_xml_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, schema=CommonSchema.XML)
+        res = endpoint.inject(topo, name='jsoninject', schema=CommonSchema.XML)
         self._build_only(name, topo)
 
     def test_basic_string_injection(self):
         name = 'test_basic_string_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, schema=CommonSchema.String)
+        res = endpoint.inject(topo, name='jsoninject', schema=CommonSchema.String)
         res.print()
         self._build_only(name, topo)
 
     def test_basic_stream_schema_injection(self):
         name = 'test_basic_stream_schema_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, schema=StreamSchema('tuple<int32 a, boolean alert>'))
+        res = endpoint.inject(topo, name='jsoninject', schema=StreamSchema('tuple<int32 a, boolean alert>'))
         res.print()
         self._build_only(name, topo)
 
 
-    def test_basic_view_tuples(self):
-        name = 'test_basic_view_tuples'
+    def test_basic_expose(self):
+        name = 'test_basic_expose'
         topo = Topology(name)
         s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
-        endpoint.view_tuples(s.last(10).trigger(1))
+        endpoint.expose(s.last(10).trigger(1), name='tupleview', context='sample')
         self._build_only(name, topo)
 
