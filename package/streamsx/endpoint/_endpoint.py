@@ -121,7 +121,7 @@ def expose(window, name, context=None):
 
 class _HTTPInjection(streamsx.spl.op.Source):
 
-    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=0, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
         topology = topology
         params = dict()
         if vmArg is not None:
@@ -150,7 +150,7 @@ class _HTTPInjection(streamsx.spl.op.Source):
 
 class _HTTPTupleView(streamsx.spl.op.Sink):
 
-    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=0, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
         topology = stream.topology
         kind="com.ibm.streamsx.inet.rest::HTTPTupleView"
         params = dict()
