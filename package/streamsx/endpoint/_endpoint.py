@@ -8,11 +8,15 @@ import streamsx.spl.op
 import streamsx.spl.types
 from streamsx.topology.schema import CommonSchema, StreamSchema
 from streamsx.spl.types import rstring
-
+import streamsx.spl.toolkit as tk
 from streamsx.toolkits import download_toolkit
 
 _TOOLKIT_NAME = 'com.ibm.streamsx.inetserver'
 
+def _add_toolkit_dependency(topo, version):
+    # IMPORTANT: Dependency of this python wrapper to a specific toolkit version
+    # This is important when toolkit is not set with streamsx.spl.toolkit.add_toolkit (selecting toolkit from remote build service)
+    tk.add_toolkit_dependency(topo, _TOOLKIT_NAME, version)
 
 
 def download_toolkit(url=None, target_dir=None):
@@ -79,6 +83,8 @@ def inject(topology, name, context=None, schema=CommonSchema.Json):
         Output Stream with schema defined in ``schema`` parameter (default ``CommonSchema.Json``).
     """
 
+    _add_toolkit_dependency(topology, '4.2.0')
+
     if schema is CommonSchema.Json:
         kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'   
     elif schema is CommonSchema.XML:
@@ -114,6 +120,9 @@ def expose(window, name, context=None):
     Returns:
         streamsx.topology.topology.Sink: Stream termination.
     """
+
+    _add_toolkit_dependency(window.topology, '4.2.0')
+
     _op = _HTTPTupleView(window, context=context, name=name)
     return streamsx.topology.topology.Sink(_op)
 
