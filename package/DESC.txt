@@ -3,8 +3,6 @@ Overview
 
 Provides functions to add Streams operators acting as communication endpoints for your Streams application.
 
-This package exposes the `com.ibm.streamsx.inetserver <https://ibmstreams.github.io/streamsx.inetserver/>`_ toolkit as Python methods for use with IBM Streams including IBM Cloud Pak for Data.
-
 * `IBM Streams developer community <https://developer.ibm.com/streamsdev/>`_
 
 
