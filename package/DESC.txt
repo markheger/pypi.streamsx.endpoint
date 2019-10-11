@@ -1,27 +1,13 @@
 Overview
 ========
 
-Provides functions to add Streams operators acting as communication endpoints for your Streams application.
+Provides endpoints within IBM Cloud Pak for Data (CP4D) enviroment that are exposed through the `enpoint-monitor <https://github.com/IBMStreams/endpoint-monitor>`_.
 
+This package is for use with IBM Streams in IBM Cloud Pak for Data (CP4D) and provides functions to add Streams operators acting as communication endpoints for your Streams application.
+
+* `CP4D: Developing application with IBM Streams <https://www.ibm.com/support/producthub/icpdata/docs/content/SSQNUZ_current/com.ibm.icpdata.doc/streams/developing-intro.html>`_
+* `CP4D: IBM Streams endpoint monitor <https://github.com/IBMStreams/endpoint-monitor>`_
 * `IBM Streams developer community <https://developer.ibm.com/streamsdev/>`_
-
-
-Sample
-======
-
-A simple example of a Streams application that provides an endpoint for json injection::
-
-    from streamsx.topology.topology import *
-    from streamsx.topology.context import submit
-    import streamsx.endpoint as endpoint
-
-    topo = Topology()
-
-    s1 = endpoint.inject(topo)
-    s1.print()
-
-    submit ('DISTRIBUTED', topo)
-
 
 Documentation
 =============
