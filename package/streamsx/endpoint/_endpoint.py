@@ -53,7 +53,7 @@ def download_toolkit(url=None, target_dir=None):
     return _toolkit_location
 
 
-def inject(topology, name, context=None, schema=CommonSchema.Json):
+def inject(topology, name, context=None, monitor=None, schema=CommonSchema.Json):
     """Receives HTTP POST requests.
 
     Embeds a Jetty web server to allow HTTP/HTTPS POST requests with the following mime types to be submitted as tuple on the output stream:
@@ -77,6 +77,7 @@ def inject(topology, name, context=None, schema=CommonSchema.Json):
         topology: The Streams topology.
         name(str): Source name in the Streams context. This name is part of the URL.
         context(str): Defines an URL context path. URL contains ``context``/``name``.
+        monitor(str): The name of the endpoint-monitor that provides the ssl configuration for this endpoint. If it is None, the connection uses plain HTTP
         schema: Schema for returned Stream, default is ``CommonSchema.Json``
 
     Returns:
@@ -94,7 +95,11 @@ def inject(topology, name, context=None, schema=CommonSchema.Json):
     else:
         raise ValueError(schema)
 
-    _op = _HTTPInjection(topology, kind=kind, context=context, schema=schema, name=name)
+    sslAppConfigName = None
+    if monitor is not None:
+        sslAppConfigName = monitor + '--streams-certs'
+
+    _op = _HTTPInjection(topology, kind=kind, context=context, schema=schema, name=name, sslAppConfigName=sslAppConfigName)
     return _op.outputs[0]
 
 
@@ -130,7 +135,7 @@ def expose(window, name, context=None):
 
 class _HTTPInjection(streamsx.spl.op.Source):
 
-    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=0, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=0, trustStore=None, trustStorePassword=None, sslAppConfigName=None, vmArg=None, name=None):
         topology = topology
         params = dict()
         if vmArg is not None:
@@ -153,13 +158,15 @@ class _HTTPInjection(streamsx.spl.op.Source):
             params['trustStore'] = trustStore
         if trustStorePassword is not None:
             params['trustStorePassword'] = trustStorePassword
+        if sslAppConfigName is not None:
+            params['sslAppConfigName'] = sslAppConfigName
 
         super(_HTTPInjection, self).__init__(topology,kind,schema,params,name)
 
 
 class _HTTPTupleView(streamsx.spl.op.Sink):
 
-    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=0, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=0, trustStore=None, trustStorePassword=None, sslAppConfigName=None, vmArg=None, name=None):
         topology = stream.topology
         kind="com.ibm.streamsx.inet.rest::HTTPTupleView"
         params = dict()
@@ -195,6 +202,8 @@ class _HTTPTupleView(streamsx.spl.op.Sink):
             params['trustStore'] = trustStore
         if trustStorePassword is not None:
             params['trustStorePassword'] = trustStorePassword
+        if sslAppConfigName is not None:
+            params['sslAppConfigName'] = sslAppConfigName
 
         super(_HTTPTupleView, self).__init__(kind,stream,params,name)
 
