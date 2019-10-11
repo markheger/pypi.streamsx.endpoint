@@ -8,11 +8,15 @@ import streamsx.spl.op
 import streamsx.spl.types
 from streamsx.topology.schema import CommonSchema, StreamSchema
 from streamsx.spl.types import rstring
-
+import streamsx.spl.toolkit as tk
 from streamsx.toolkits import download_toolkit
 
 _TOOLKIT_NAME = 'com.ibm.streamsx.inetserver'
 
+def _add_toolkit_dependency(topo, version):
+    # IMPORTANT: Dependency of this python wrapper to a specific toolkit version
+    # This is important when toolkit is not set with streamsx.spl.toolkit.add_toolkit (selecting toolkit from remote build service)
+    tk.add_toolkit_dependency(topo, _TOOLKIT_NAME, version)
 
 
 def download_toolkit(url=None, target_dir=None):
@@ -79,6 +83,8 @@ def inject(topology, name, context=None, schema=CommonSchema.Json):
         Output Stream with schema defined in ``schema`` parameter (default ``CommonSchema.Json``).
     """
 
+    _add_toolkit_dependency(topology, '4.2.0')
+
     if schema is CommonSchema.Json:
         kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'   
     elif schema is CommonSchema.XML:
@@ -114,6 +120,9 @@ def expose(window, name, context=None):
     Returns:
         streamsx.topology.topology.Sink: Stream termination.
     """
+
+    _add_toolkit_dependency(window.topology, '4.2.0')
+
     _op = _HTTPTupleView(window, context=context, name=name)
     return streamsx.topology.topology.Sink(_op)
 
@@ -121,7 +130,7 @@ def expose(window, name, context=None):
 
 class _HTTPInjection(streamsx.spl.op.Source):
 
-    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, topology, kind, schema=None, certificateAlias=None, context=None, contextResourceBase=None, keyPassword=None, keyStore=None, keyStorePassword=None, port=0, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
         topology = topology
         params = dict()
         if vmArg is not None:
@@ -150,7 +159,7 @@ class _HTTPInjection(streamsx.spl.op.Source):
 
 class _HTTPTupleView(streamsx.spl.op.Sink):
 
-    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=None, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
+    def __init__(self, stream, certificateAlias=None, context=None, contextResourceBase=None, forceEmpty=None, headers=None, host=None, keyPassword=None, keyStore=None, keyStorePassword=None, namedPartitionQuery=None, partitionBy=None, partitionKey=None, port=0, trustStore=None, trustStorePassword=None, vmArg=None, name=None):
         topology = stream.topology
         kind="com.ibm.streamsx.inet.rest::HTTPTupleView"
         params = dict()

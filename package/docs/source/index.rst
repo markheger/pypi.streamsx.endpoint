@@ -4,12 +4,13 @@ streamsx.endpoint package
 IBM Streams endpoint integration
 ================================
 
-For details of implementing applications in Python
-for IBM Streams including IBM Cloud Pak for Data:
+Provides endpoints within IBM Cloud Pak for Data (CP4D) enviroment that are exposed through the `enpoint-monitor <https://github.com/IBMStreams/endpoint-monitor>`_.
 
-  * `streamsx package documentation <https://streamsxtopology.readthedocs.io/en/stable>`_
+This package is for use with IBM Streams in IBM Cloud Pak for Data (CP4D) and provides functions to add Streams operators acting as communication endpoints for your Streams application.
 
-This package exposes SPL operators in the `com.ibm.streamsx.inetserver <https://ibmstreams.github.io/streamsx.inetserver/>`_ toolkit as Python methods.
+* `CP4D: Developing application with IBM Streams <https://www.ibm.com/support/producthub/icpdata/docs/content/SSQNUZ_current/com.ibm.icpdata.doc/streams/developing-intro.html>`_
+* `CP4D: IBM Streams endpoint monitor <https://github.com/IBMStreams/endpoint-monitor>`_
+* `IBM Streams developer community <https://developer.ibm.com/streamsdev/>`_
 
 .. automodule:: streamsx.endpoint
 
