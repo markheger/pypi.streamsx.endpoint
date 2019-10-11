@@ -83,10 +83,10 @@ def inject(topology, name, context=None, schema=CommonSchema.Json):
         Output Stream with schema defined in ``schema`` parameter (default ``CommonSchema.Json``).
     """
 
-    _add_toolkit_dependency(topology, '4.2.0')
+    _add_toolkit_dependency(topology, '4.3.0')
 
     if schema is CommonSchema.Json:
-        kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'   
+        kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'
     elif schema is CommonSchema.XML:
         kind = 'com.ibm.streamsx.inet.rest::HTTPXMLInjection'
     elif (schema is CommonSchema.String) or (isinstance(schema, StreamSchema)):
@@ -121,7 +121,7 @@ def expose(window, name, context=None):
         streamsx.topology.topology.Sink: Stream termination.
     """
 
-    _add_toolkit_dependency(window.topology, '4.2.0')
+    _add_toolkit_dependency(window.topology, '4.3.0')
 
     _op = _HTTPTupleView(window, context=context, name=name)
     return streamsx.topology.topology.Sink(_op)
