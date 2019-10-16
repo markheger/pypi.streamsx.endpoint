@@ -35,27 +35,27 @@ class Test(TestCase):
     def test_basic_json_injection(self):
         name = 'test_basic_json_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, name='jsoninject', monitor=None)
+        res = endpoint.inject(topo, name='jsoninject', monitor=None, context='sample')
         res.print()
         self._build_only(name, topo)
 
     def test_basic_xml_injection(self):
         name = 'test_basic_xml_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, name='jsoninject', schema=CommonSchema.XML, monitor='xml')
+        res = endpoint.inject(topo, name='jsoninject', schema=CommonSchema.XML, monitor='xml', context='sample')
         self._build_only(name, topo)
 
     def test_basic_string_injection(self):
         name = 'test_basic_string_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, name='jsoninject', schema=CommonSchema.String, monitor='sample')
+        res = endpoint.inject(topo, name='jsoninject', schema=CommonSchema.String, monitor='sample', context='sample')
         res.print()
         self._build_only(name, topo)
 
     def test_basic_stream_schema_injection(self):
         name = 'test_basic_stream_schema_injection'
         topo = Topology(name)
-        res = endpoint.inject(topo, name='jsoninject', schema=StreamSchema('tuple<int32 a, boolean alert>'), monitor=None)
+        res = endpoint.inject(topo, name='jsoninject', schema=StreamSchema('tuple<int32 a, boolean alert>'), monitor=None, context='sample')
         res.print()
         self._build_only(name, topo)
 

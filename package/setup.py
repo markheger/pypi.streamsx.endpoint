@@ -13,11 +13,12 @@ setup(
   url = 'https://github.com/IBMStreams/streamsx.endpoint',
   keywords = ['streams', 'ibmstreams', 'streaming', 'analytics', 'streaming-analytics', 'http', 'endpoint'],
   classifiers = [
-    'Development Status :: 2 - Pre-Alpha',
+    'Development Status :: 3 - Alpha',
     'License :: OSI Approved :: Apache Software License',
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
+    'Programming Language :: Python :: 3.7',
   ],
   install_requires=['streamsx', 'streamsx.toolkits'],
   
