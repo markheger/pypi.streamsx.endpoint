@@ -72,7 +72,7 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
 
         import streamsx.endpoint as endpoint
         topo = Topology()
-        s1 = endpoint.inject(topo, context='sample', name='jsoninject')
+        s1 = endpoint.inject(topo, context='sample', name='jsoninject', monitor='endpoint-in')
         s1.print()
 
     Args:
@@ -114,7 +114,7 @@ def expose(window, context, name, monitor):
 
         import streamsx.endpoint as endpoint
         s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
-        endpoint.expose(window=s.last(3).trigger(1), context='sample', name='tupleview', monitor='endpoint1')
+        endpoint.expose(window=s.last(3).trigger(1), context='sample', name='tupleview', monitor='endpoint-out')
 
     The URL containing "**context**/**name**" for the sample above ends with: ``/sample/tupleview/ports/input/0/tuples``
 
