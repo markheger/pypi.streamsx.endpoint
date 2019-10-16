@@ -25,7 +25,7 @@ A simple example of a Streams application that provides an endpoint for json inj
 
     topo = Topology()
 
-    s1 = endpoint.inject(topo)
+    s1 = endpoint.inject(topo, context='sample', name='jsoninject', monitor='endpoint-sample')
     s1.print()
 
     # Use for IBM Streams including IBM Cloud Pak for Data
@@ -34,7 +34,7 @@ A simple example of a Streams application that provides an endpoint for json inj
 
 """
 
-__version__='0.6.0'
+__version__='0.7.0'
 
 __all__ = ['download_toolkit', 'inject', 'expose']
 from streamsx.endpoint._endpoint import download_toolkit, inject, expose

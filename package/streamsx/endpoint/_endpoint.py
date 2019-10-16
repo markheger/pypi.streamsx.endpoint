@@ -55,7 +55,7 @@ def download_toolkit(url=None, target_dir=None):
     return _toolkit_location
 
 
-def inject(topology, name, monitor, context=None, schema=CommonSchema.Json):
+def inject(topology, context, name, monitor, schema=CommonSchema.Json):
     """Receives HTTP POST requests.
 
     Embeds a Jetty web server to allow HTTP/HTTPS POST requests with the following mime types to be submitted as tuple on the output stream:
@@ -72,14 +72,14 @@ def inject(topology, name, monitor, context=None, schema=CommonSchema.Json):
 
         import streamsx.endpoint as endpoint
         topo = Topology()
-        s1 = endpoint.inject(topo, name='jsoninject', context='sample')
+        s1 = endpoint.inject(topo, context='sample', name='jsoninject')
         s1.print()
 
     Args:
         topology: The Streams topology.
+        context(str): Defines an URL context path. URL contains ``context``/``name``.
         name(str): Source name in the Streams context. This name is part of the URL.
         monitor(str): The name of the endpoint-monitor that provides the ssl configuration for this endpoint. If it is None, the connection uses plain HTTP
-        context(str): Defines an URL context path. URL contains ``context``/``name``.
         schema: Schema for returned Stream, default is ``CommonSchema.Json``
 
     Returns:
@@ -105,7 +105,7 @@ def inject(topology, name, monitor, context=None, schema=CommonSchema.Json):
     return _op.outputs[0]
 
 
-def expose(window, name, monitor, context=None):
+def expose(window, context, name, monitor):
     """REST HTTP/HTTPS API to view tuples from windowed input ports.
 
     Embeds a Jetty web server to provide HTTP REST access to the collection of tuples in the input port window at the time of the last eviction for tumbling windows, or last trigger for sliding windows.
@@ -114,15 +114,15 @@ def expose(window, name, monitor, context=None):
 
         import streamsx.endpoint as endpoint
         s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
-        endpoint.expose(window=s.last(3).trigger(1), name='tupleview', context='sample')
+        endpoint.expose(window=s.last(3).trigger(1), context='sample', name='tupleview', monitor='endpoint1')
 
     The URL containing "**context**/**name**" for the sample above ends with: ``/sample/tupleview/ports/input/0/tuples``
 
     Args:
         window(Window): Windowed stream of tuples that will be viewable using a HTTP GET request. 
+        context(str): Defines an URL context path. URL contains ``context``/``name``.
         name(str): Sink name in the Streams context. This name is part of the URL.
         monitor(str): The name of the endpoint-monitor that provides the ssl configuration for this endpoint. If it is None, the connection uses plain HTTP
-        context(str): Defines an URL context path. URL contains ``context``/``name``.
 
     Returns:
         streamsx.topology.topology.Sink: Stream termination.
