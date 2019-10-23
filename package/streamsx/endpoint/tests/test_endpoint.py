@@ -16,12 +16,24 @@ import json
 
 
 class Test(TestCase):
-    
-    def _build_only(self, name, topo):
 
-        inetserver_toolkit_home = os.environ["STREAMSX_INETSERVER_TOOLKIT"]
-        if inetserver_toolkit_home is not None:
-            streamsx.spl.toolkit.add_toolkit(topo, inetserver_toolkit_home)
+
+    def _get_inetserver_toolkit():
+        result = True
+        try:
+            os.environ['STREAMSX_INETSERVER_TOOLKIT']
+        except KeyError: 
+            result = False
+        if result:
+            inetserver_toolkit_home = os.environ["STREAMSX_INETSERVER_TOOLKIT"]
+        else:    
+            inetserver_toolkit_home = endpoint.download_toolkit()
+        return inetserver_toolkit_home
+
+
+    def _build_only(self, name, topo):
+        if self._tk is not None:
+            streamsx.spl.toolkit.add_toolkit(topo, self._tk)
 
         result = streamsx.topology.context.submit("TOOLKIT", topo.graph) # creates tk* directory
         print(name + ' (TOOLKIT):' + str(result))
@@ -31,6 +43,9 @@ class Test(TestCase):
         print(name + ' (BUNDLE):' + str(result))
         assert(result.return_code == 0)
 
+    @classmethod
+    def setUpClass(self):
+        self._tk = self._get_inetserver_toolkit()
 
     def test_basic_json_injection(self):
         name = 'test_basic_json_injection'

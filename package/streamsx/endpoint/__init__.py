@@ -34,7 +34,7 @@ A simple example of a Streams application that provides an endpoint for json inj
 
 """
 
-__version__='0.7.1'
+__version__='1.0.0'
 
 __all__ = ['download_toolkit', 'inject', 'expose']
 from streamsx.endpoint._endpoint import download_toolkit, inject, expose

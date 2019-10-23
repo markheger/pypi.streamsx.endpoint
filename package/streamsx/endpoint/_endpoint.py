@@ -75,6 +75,8 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
         s1 = endpoint.inject(topo, context='sample', name='jsoninject', monitor='endpoint-in')
         s1.print()
 
+    The injection URL (application/json) containing "**context**/**name**" for the sample above ends with: ``/sample/jsoninject/ports/output/0/inject``
+
     Args:
         topology: The Streams topology.
         context(str): Defines an URL context path. URL contains ``context``/``name``.
