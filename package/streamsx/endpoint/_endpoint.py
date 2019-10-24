@@ -108,9 +108,9 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
 
 
 def expose(window, context, name, monitor):
-    """REST HTTP/HTTPS API to view tuples from windowed input ports.
+    """REST HTTP/HTTPS API to view tuples from a window on a stream.
 
-    Embeds a Jetty web server to provide HTTP REST access to the collection of tuples in the input port window at the time of the last eviction for tumbling windows, or last trigger for sliding windows.
+    Embeds a Jetty web server to provide HTTP REST access to the collection of tuples in `window` at the time of the last eviction for tumbling windows, or last trigger for sliding windows.
 
     Example with a sliding window::
 
