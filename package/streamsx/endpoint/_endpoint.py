@@ -77,6 +77,27 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
 
     The injection URL (application/json) containing "**context**/**name**" for the sample above ends with: ``/sample/jsoninject/ports/output/0/inject``
 
+    **URL mapping**
+
+    The URL contains the following parts:
+    
+    ``https://<base-url>/<prefix>/<context>/<name>/<postfix>``
+
+    For a web-server in a job its URLs are exposed with **prefix** path:
+
+    * jobname/ - When a job name was explictly set. Job names should be simple mapping to a single path element.
+    * streams/jobs/jobid/ - When a job name was not explicitly set.
+
+    Example URLs within the cluster for application-name of "em" in project "myproject" are
+    
+    * with a web-server in job named "transit" with context "sample" and name "jsoninject":
+        ``https://em.myproject.svc:8443/transit/sample/jsoninject/ports/output/0/inject``
+    * with a web-server in job 7:
+        ``https://em.myproject.svc:8443/streams/jobs/7/sample/jsoninject/ports/output/0/inject``
+    * retrieve information for job named "transit" with context "sample" and name "jsoninject":
+        ``https://em.myproject.svc:8443/transit/sample/jsoninject/ports/info``
+
+
     Args:
         topology: The Streams topology.
         context(str): Defines an URL context path. URL contains ``context``/``name``.
@@ -119,6 +140,27 @@ def expose(window, context, name, monitor):
         endpoint.expose(window=s.last(3).trigger(1), context='sample', name='tupleview', monitor='endpoint-out')
 
     The URL containing "**context**/**name**" for the sample above ends with: ``/sample/tupleview/ports/input/0/tuples``
+
+    **URL mapping**
+
+    The URL contains the following parts:
+    
+    ``https://<base-url>/<prefix>/<context>/<name>/<postfix>``
+
+    For a web-server in a job its URLs are exposed with **prefix** path:
+
+    * jobname/ - When a job name was explictly set. Job names should be simple mapping to a single path element.
+    * streams/jobs/jobid/ - When a job name was not explicitly set.
+
+    Example URLs within the cluster for application-name of "em" in project "myproject" are
+    
+    * with a web-server in job named "transit" with context "sample" and name "tupleview":
+        ``https://em.myproject.svc:8443/transit/sample/tupleview/ports/input/0/tuples``
+    * with a web-server in job 7:
+        ``https://em.myproject.svc:8443/streams/jobs/7/sample/tupleview/ports/input/0/tuples``
+    * retrieve information for job named "transit" with context "sample" and name "tupleview":
+        ``https://em.myproject.svc:8443/transit/sample/tupleview/ports/info``
+
 
     Args:
         window(Window): Windowed stream of tuples that will be viewable using a HTTP GET request. 
