@@ -11,8 +11,6 @@ for IBM Streams including IBM Cloud Pak for Data:
 
   * `streamsx package documentation <https://streamsxtopology.readthedocs.io/en/stable>`_
 
-This package exposes SPL operators in the `com.ibm.streamsx.inetserver <https://ibmstreams.github.io/streamsx.inetserver/>`_ toolkit as Python methods.
-
 
 Sample
 ++++++
@@ -34,7 +32,7 @@ A simple example of a Streams application that provides an endpoint for json inj
 
 """
 
-__version__='1.0.0'
+__version__='1.0.1'
 
 __all__ = ['download_toolkit', 'inject', 'expose']
 from streamsx.endpoint._endpoint import download_toolkit, inject, expose
