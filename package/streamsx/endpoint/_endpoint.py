@@ -109,7 +109,7 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
         Output Stream with schema defined in ``schema`` parameter (default ``CommonSchema.Json``).
     """
 
-    _add_toolkit_dependency(topology, '4.3.0')
+    _add_toolkit_dependency(topology, '[4.3.0,5.0.0)')
 
     if schema is CommonSchema.Json:
         kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'
@@ -172,7 +172,7 @@ def expose(window, context, name, monitor):
         streamsx.topology.topology.Sink: Stream termination.
     """
 
-    _add_toolkit_dependency(window.topology, '4.3.0')
+    _add_toolkit_dependency(window.topology, '[4.3.0,5.0.0)')
 
     sslAppConfigName = None
     if monitor is not None:
