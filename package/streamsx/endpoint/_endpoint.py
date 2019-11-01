@@ -10,6 +10,7 @@ from streamsx.topology.schema import CommonSchema, StreamSchema
 from streamsx.spl.types import rstring
 import streamsx.spl.toolkit as tk
 from streamsx.toolkits import download_toolkit
+import json
 
 _TOOLKIT_NAME = 'com.ibm.streamsx.inetserver'
 
@@ -72,10 +73,10 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
 
         import streamsx.endpoint as endpoint
         topo = Topology()
-        s1 = endpoint.inject(topo, context='sample', name='jsoninject', monitor='endpoint-in')
+        s1 = endpoint.inject(topo, context='sample', name='json', monitor='endpoint-in')
         s1.print()
 
-    The injection URL (application/json) containing "**context**/**name**" for the sample above ends with: ``/sample/jsoninject/ports/output/0/inject``
+    The injection URL (application/json) containing "**context**/**name**" for the sample above ends with: ``/sample/json/inject``
 
     **URL mapping**
 
@@ -90,12 +91,12 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
 
     Example URLs within the cluster for application-name of "em" in project "myproject" are
     
-    * with a web-server in job named "transit" with context "sample" and name "jsoninject":
-        ``https://em.myproject.svc:8443/transit/sample/jsoninject/ports/output/0/inject``
+    * with a web-server in job named "transit" with context "sample" and name "json":
+        ``https://em.myproject.svc:8443/transit/sample/json/inject``
     * with a web-server in job 7:
-        ``https://em.myproject.svc:8443/streams/jobs/7/sample/jsoninject/ports/output/0/inject``
-    * retrieve information for job named "transit" with context "sample" and name "jsoninject":
-        ``https://em.myproject.svc:8443/transit/sample/jsoninject/ports/info``
+        ``https://em.myproject.svc:8443/streams/jobs/7/sample/json/inject``
+    * retrieve information for job named "transit" with context "sample" and name "json":
+        ``https://em.myproject.svc:8443/transit/sample/json/ports/info``
 
 
     Args:
@@ -110,6 +111,14 @@ def inject(topology, context, name, monitor, schema=CommonSchema.Json):
     """
 
     _add_toolkit_dependency(topology, '[4.3.0,5.0.0)')
+
+#    py_types = {
+#        str: CommonSchema.String,
+#        json: CommonSchema.Json,
+#        }
+
+#    if schema in py_types:
+#        schema = py_types[schema]
 
     if schema is CommonSchema.Json:
         kind = 'com.ibm.streamsx.inet.rest::HTTPJSONInjection'
@@ -137,9 +146,9 @@ def expose(window, context, name, monitor):
 
         import streamsx.endpoint as endpoint
         s = topo.source([{'a': 'Hello'}, {'a': 'World'}, {'a': '!'}]).as_json()
-        endpoint.expose(window=s.last(3).trigger(1), context='sample', name='tupleview', monitor='endpoint-out')
+        endpoint.expose(window=s.last(3).trigger(1), context='sample', name='view', monitor='endpoint-out')
 
-    The URL containing "**context**/**name**" for the sample above ends with: ``/sample/tupleview/ports/input/0/tuples``
+    The URL containing "**context**/**name**" for the sample above ends with: ``/sample/view/tuples``
 
     **URL mapping**
 
@@ -154,12 +163,12 @@ def expose(window, context, name, monitor):
 
     Example URLs within the cluster for application-name of "em" in project "myproject" are
     
-    * with a web-server in job named "transit" with context "sample" and name "tupleview":
-        ``https://em.myproject.svc:8443/transit/sample/tupleview/ports/input/0/tuples``
+    * with a web-server in job named "transit" with context "sample" and name "view":
+        ``https://em.myproject.svc:8443/transit/sample/view/tuples``
     * with a web-server in job 7:
-        ``https://em.myproject.svc:8443/streams/jobs/7/sample/tupleview/ports/input/0/tuples``
-    * retrieve information for job named "transit" with context "sample" and name "tupleview":
-        ``https://em.myproject.svc:8443/transit/sample/tupleview/ports/info``
+        ``https://em.myproject.svc:8443/streams/jobs/7/sample/view/tuples``
+    * retrieve information for job named "transit" with context "sample" and name "view":
+        ``https://em.myproject.svc:8443/transit/sample/view/ports/info``
 
 
     Args:
