@@ -7,7 +7,7 @@ Overview
 ++++++++
 
 For details of implementing applications in Python
-for IBM Streams including IBM Cloud Pak for Data:
+for Streams including Cloud Pak for Data:
 
   * `streamsx package documentation <https://streamsxtopology.readthedocs.io/en/stable>`_
 
@@ -26,13 +26,12 @@ A simple example of a Streams application that provides an endpoint for json inj
     s1 = endpoint.inject(topo, context='sample', name='jsoninject', monitor='endpoint-sample')
     s1.print()
 
-    # Use for IBM Streams including IBM Cloud Pak for Data
     submit ('DISTRIBUTED', topo)
 
 
 """
 
-__version__='1.0.2'
+__version__='1.0.3'
 
 __all__ = ['download_toolkit', 'inject', 'expose']
 from streamsx.endpoint._endpoint import download_toolkit, inject, expose
