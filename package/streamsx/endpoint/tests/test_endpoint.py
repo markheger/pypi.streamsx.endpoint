@@ -89,5 +89,11 @@ class Test(TestCase):
         endpoint.expose(s.last(10).trigger(1), name='tupleview', context='sample', monitor='sample')
         self._build_only(name, topo)
 
+#    def test_type_json_injection(self):
+#        name = 'test_type_json_injection'
+#        topo = Topology(name)
+#        res = endpoint.inject(topo, name='jsoninject', monitor=None, context='sample', schema=json)
+#        res.print()
+#        self._build_only(name, topo)
 
 
